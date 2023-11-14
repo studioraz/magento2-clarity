@@ -1,0 +1,23 @@
+<?php
+/*
+ * Copyright © 2023 Studio Raz. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+
+<?php
+/** @var $block \SR\Clarity\Block\Clarity */
+/** @var $escaper \Magento\Framework\Escaper */
+    $clarityCode = $block->getClarityTrackingCode();
+    ?>
+<?php if ($block->isEnabled()): ?>
+    <!-- BEGIN CLARITY TRACKING CODE -->
+    <script>
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
+    </script>
+    <!-- END CLARITY TRACKING CODE -->
+<?php endif; ?>

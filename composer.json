@@ -1,0 +1,33 @@
+{
+    "name": "studioraz/magento2-clarity",
+    "description": "Studio Raz Magento 2 Clarity module",
+    "type": "magento2-module",
+    "prefer-stable": true,
+    "version": "1.0.0",
+    "license": [
+        "proprietary"
+    ],
+    "require": {
+        "magento/framework": "*",
+        "studioraz/magento2-base" : "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "SR\\Clarity\\": ""
+        }
+    },
+    "support": {
+        "email": "support@studioraz.co.il"
+    },
+    "authors": [
+        {
+            "name": "Studio Raz",
+            "email": "info@studioraz.co.il",
+            "homepage": "https://www.studio-raz.com",
+            "role": "Developer"
+        }
+    ]
+}

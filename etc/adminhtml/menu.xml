@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright © 2023 Studio Raz. All rights reserved.
+  ~ See LICENSE.txt for license details.
+  -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="SR_Clarity::studioraz" module="SR_Clarity" title="Clarity" sortOrder="150"
+             parent="SR_Base::srbase" resource="SR_Clarity::studioraz"/>
+        <add id="SR_Clarity::configuration"
+             title="Settings"
+             module="SR_Clarity"
+             sortOrder="70"
+             parent="SR_Clarity::studioraz"
+             resource="SR_Clarity::srclarity_settings"
+             action="adminhtml/system_config/edit/section/srclarity"/>
+    </menu>
+</config>

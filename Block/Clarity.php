@@ -115,7 +115,7 @@ class Clarity extends Template
     {
         // Check if the customer is logged in
         if ($this->isCustomerLoggedIn()) {
-            return $this->customerSession->getCustomer()->getEmail();
+            return $this->customerSession->getCustomer()->getEmail() ?? '';
         }
 
         // Check if it's an order success page

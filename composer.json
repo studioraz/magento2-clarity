@@ -16,7 +16,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "SR\\Clarity\\": ""
+            "SR\\Clarity\\": "src"
         }
     },
     "support": {

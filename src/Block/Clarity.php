@@ -69,10 +69,10 @@ class Clarity extends Template
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getClarityTrackingCode(): string
+    public function getClarityTrackingCode(): ?string
     {
         return $this->scopeConfig->getValue(
             self::XML_CLARITY_TRACKING_CODE,
@@ -81,10 +81,10 @@ class Clarity extends Template
     }
 
     /**
-     * @return string
+     * @return string|null
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function isEnabled(): string
+    public function isEnabled(): ?string
     {
         return $this->scopeConfig->getValue(
             self::XML_CLARITY_ENBALED,

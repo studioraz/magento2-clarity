@@ -8,8 +8,8 @@
 <?php
 /** @var $block \SR\Clarity\Block\Clarity */
 /** @var $escaper \Magento\Framework\Escaper */
-    $clarityCode = $block->getClarityTrackingCode();
-    ?>
+$clarityCode = $block->getClarityTrackingCode();
+?>
 <?php if ($block->isEnabled()): ?>
     <!-- BEGIN CLARITY TRACKING CODE -->
     <script>
@@ -25,6 +25,12 @@
             <?php endif;; ?>
             <?php if ($orderIncrementId = $block->getOrderId()): ?>
                 c.clarity("set", "order_increment_id", "<?= $escaper->escapeJs($orderIncrementId) ?>");
+            <?php endif;; ?>
+            <?php if ($quoteId = $block->getQuoteId()): ?>
+                c.clarity("set", "quote_id", "<?= $escaper->escapeJs($quoteId) ?>");
+            <?php endif;; ?>
+            <?php if ($sessionId = $block->getSessionId()): ?>
+                c.clarity("set", "session_id", "<?= $escaper->escapeJs($sessionId) ?>");
             <?php endif;; ?>
         })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
     </script>

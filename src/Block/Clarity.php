@@ -147,6 +147,22 @@ class Clarity extends Template
     }
 
     /**
+     * @return int|null
+     */
+    public function getQuoteId()
+    {
+        return $this->checkoutSession->getQuoteId();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSessionId()
+    {
+        return $this->customerSession->getSessionId();
+    }
+
+    /**
      * @return bool
      */
     protected function isCustomerLoggedIn(): bool

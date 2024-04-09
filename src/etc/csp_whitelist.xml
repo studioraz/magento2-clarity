@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<csp_whitelist>
+    <policies>
+        <policy id="connect-src">
+            <values>
+                <value id="clarity-ms" type="host">b.clarity.ms</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

@@ -17,22 +17,36 @@ $clarityCode = $block->getClarityTrackingCode();
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            <?php if ($block->getCustomerGroup()): ?>
-                c.clarity("set", "customer_group", "<?= $escaper->escapeJs($block->getCustomerGroup()) ?>");
-            <?php endif;; ?>
-            <?php if ($customerEmail = $block->getCustomerEmail()): ?>
-                c.clarity("set", "custom-id", "<?= $escaper->escapeJs($customerEmail) ?>");
+            <?php if ($sessionId = $block->getSessionId()): ?>
+                window.srClaritySessionId = '<?= $escaper->escapeJs($sessionId) ?>';
+                c.clarity("identify", window.srClaritySessionId, window.srClaritySessionId, '', '');
             <?php endif;; ?>
             <?php if ($orderIncrementId = $block->getOrderId()): ?>
-                c.clarity("set", "order_increment_id", "<?= $escaper->escapeJs($orderIncrementId) ?>");
+                c.clarity("set", "order-increment-id", "<?= $escaper->escapeJs($orderIncrementId) ?>");
             <?php endif;; ?>
             <?php if ($quoteId = $block->getQuoteId()): ?>
-                c.clarity("set", "quote_id", "<?= $escaper->escapeJs($quoteId) ?>");
+                c.clarity("set", "quote-id", "<?= $escaper->escapeJs($quoteId) ?>");
             <?php endif;; ?>
-            <?php if ($sessionId = $block->getSessionId()): ?>
-                c.clarity("set", "session_id", "<?= $escaper->escapeJs($sessionId) ?>");
+            <?php if ($customerEmail = $block->getCustomerEmail()): ?>
+                c.clarity("set", "customer-email", "<?= $escaper->escapeJs($customerEmail) ?>");
             <?php endif;; ?>
         })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
+
+        require([
+            'Magento_Customer/js/customer-data'
+        ], function (customerData) {
+
+            customerData.get('customer').subscribe(function (customer) {
+                if (customer && customer.email && window.srClaritySessionId) {
+                    let email = customer.email;
+                    let fullname = customer.fullname;
+                    let groupName = customer.groupName;
+                    window.clarity("set", "friendly-name", fullname);
+                    window.clarity("set", "customer-group", groupName);
+                    window.clarity("set", "customer-email", email);
+                }
+            });
+        });
     </script>
     <!-- END CLARITY TRACKING CODE -->
 <?php endif; ?>

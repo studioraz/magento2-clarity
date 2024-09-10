@@ -111,6 +111,28 @@ class Clarity extends Template
     /**
      * @return string
      */
+    public function getCustomerName(): string
+    {
+        // Check if the customer is logged in
+        if ($this->isCustomerLoggedIn()) {
+            return $this->customerSession->getCustomer()->getName() ?? '';
+        }
+
+        // Check if it's an order success page
+        $lastOrderId = $this->checkoutSession->getLastOrderId();
+        if ($lastOrderId && $this->isCheckoutSuccessPage()) {
+            try {
+                return $this->getOrder($lastOrderId)->getCustomerName();
+            } catch (\Exception $e) {
+                return '';
+            }
+        }
+        return '';
+    }
+
+    /**
+     * @return string
+     */
     public function getCustomerEmail(): string
     {
         // Check if the customer is logged in

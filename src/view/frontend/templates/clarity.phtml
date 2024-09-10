@@ -32,21 +32,15 @@ $clarityCode = $block->getClarityTrackingCode();
             <?php endif;; ?>
         })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
 
-        require([
-            'Magento_Customer/js/customer-data'
-        ], function (customerData) {
+        let email = '<?= $block->getCustomerEmail() ?>';
+        let groupName = '<?= $block->getCustomerGroup() ?>';
+        let fullname = '<?= $block->getCustomerName() ?>';
+        if (email && window.srClaritySessionId) {
+            window.clarity("set", "friendly-name", fullname ?? '');
+            window.clarity("set", "customer-group", groupName);
+            window.clarity("set", "customer-email", email);
+        }
 
-            customerData.get('customer').subscribe(function (customer) {
-                if (customer && customer.email && window.srClaritySessionId) {
-                    let email = customer.email;
-                    let fullname = customer.fullname;
-                    let groupName = customer.groupName;
-                    window.clarity("set", "friendly-name", fullname);
-                    window.clarity("set", "customer-group", groupName);
-                    window.clarity("set", "customer-email", email);
-                }
-            });
-        });
     </script>
     <!-- END CLARITY TRACKING CODE -->
 <?php endif; ?>

@@ -3,7 +3,12 @@
     <policies>
         <policy id="connect-src">
             <values>
-                <value id="clarity-ms" type="host">b.clarity.ms</value>
+                <value id="clarity-ms" type="host">*.clarity.ms</value>
+            </values>
+        </policy>
+        <policy id="script-src">
+            <values>
+                <value id="clarity-ms" type="host">*.clarity.ms</value>
             </values>
         </policy>
     </policies>

@@ -21,6 +21,9 @@
                     <label>Clarity Tracking Code</label>
                     <validate>required-entry validate-alphanum</validate>
                     <comment><![CDATA[Please enter your <a href="https://clarity.microsoft.com/projects/" target="_blank">Microsoft Clarity</a> tracking code here]]></comment>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

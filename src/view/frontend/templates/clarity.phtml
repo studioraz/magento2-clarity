@@ -32,14 +32,38 @@ $clarityCode = $block->getClarityTrackingCode();
             <?php endif;; ?>
         })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
 
-        let email = '<?= $block->getCustomerEmail() ?>';
-        let groupName = '<?= $block->getCustomerGroup() ?>';
-        let fullname = '<?= $block->getCustomerName() ?>';
-        if (email && window.srClaritySessionId) {
-            window.clarity("set", "friendly-name", fullname ?? '');
-            window.clarity("set", "customer-group", groupName);
-            window.clarity("set", "customer-email", email);
-        }
+
+        <?php if ($block->isHyvaTheme()) : ?>
+            window.addEventListener("private-content-loaded", function(event) {
+                const sectionData = event.detail.data;
+                if (sectionData && sectionData.customer) {
+                    const customer = sectionData.customer;
+                    if (customer && customer.email && window.srClaritySessionId) {
+                        let email = customer.email ,
+                            fullname = customer.fullname,
+                            groupName = customer.groupName;
+                        window.clarity("set", "friendly-name", fullname);
+                        window.clarity("set", "customer-group", groupName);
+                        window.clarity("set", "customer-email", email);
+                    }
+                }
+            });
+        <?php else: ?>
+            require([
+                'Magento_Customer/js/customer-data'
+            ], function (customerData) {
+                customerData.get('customer').subscribe(function (customer) {
+                    if (customer && customer.email && window.srClaritySessionId) {
+                        let email = customer.email;
+                        let fullname = customer.fullname;
+                        let groupName = customer.groupName;
+                        window.clarity("set", "friendly-name", fullname);
+                        window.clarity("set", "customer-group", groupName);
+                        window.clarity("set", "customer-email", email);
+                    }
+                });
+            });
+        <?php endif; ?>
 
     </script>
     <!-- END CLARITY TRACKING CODE -->

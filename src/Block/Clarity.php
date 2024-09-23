@@ -20,6 +20,7 @@ use Magento\Framework\App\Http\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Framework\App\Request\Http;
 use Magento\Customer\Model\GroupManagement;
+use Magento\Framework\Module\ModuleListInterface;
 
 class Clarity extends Template
 {
@@ -27,6 +28,7 @@ class Clarity extends Template
     const XML_CLARITY_TRACKING_CODE = 'srclarity/general/tracking_code';
     const XML_CLARITY_ENBALED = 'srclarity/general/enabled';
     const SUCCESS_PAGE_URL = 'checkout/onepage/success';
+    const HYVA_THEME_MODULE = 'Hyva_Theme';
 
     protected ScopeConfigInterface $scopeConfig;
     protected CustomerSession $customerSession;
@@ -35,6 +37,7 @@ class Clarity extends Template
     protected Context $httpContext;
     protected OrderRepositoryInterface $orderRepository;
     protected Http $request;
+    protected ModuleListInterface $moduleList;
 
     /**
      * @param Template\Context $context
@@ -45,6 +48,7 @@ class Clarity extends Template
      * @param Context $httpContext
      * @param OrderRepositoryInterface $orderRepository
      * @param Http $request
+     * @param ModuleListInterface $moduleList
      * @param array $data
      */
     public function __construct(
@@ -56,6 +60,7 @@ class Clarity extends Template
         Context $httpContext,
         OrderRepositoryInterface $orderRepository,
         Http $request,
+        ModuleListInterface $moduleList,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -66,6 +71,7 @@ class Clarity extends Template
         $this->httpContext = $httpContext;
         $this->orderRepository = $orderRepository;
         $this->request = $request;
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -90,44 +96,6 @@ class Clarity extends Template
             self::XML_CLARITY_ENBALED,
             ScopeInterface::SCOPE_STORE
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerGroup(): string
-    {
-        //Need to add this validation as the customer group id for not logged in returns as 1 (General)
-        $customerGroupId = ($this->isCustomerLoggedIn())
-            ? $this->customerSession->getCustomer()->getGroupId()
-            : GroupManagement::NOT_LOGGED_IN_ID;
-        try {
-            return $this->groupRepository->getById($customerGroupId)->getCode();
-        } catch (\Exception | NoSuchEntityException $e) {
-            return '';
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerName(): string
-    {
-        // Check if the customer is logged in
-        if ($this->isCustomerLoggedIn()) {
-            return $this->customerSession->getCustomer()->getName() ?? '';
-        }
-
-        // Check if it's an order success page
-        $lastOrderId = $this->checkoutSession->getLastOrderId();
-        if ($lastOrderId && $this->isCheckoutSuccessPage()) {
-            try {
-                return $this->getOrder($lastOrderId)->getCustomerName();
-            } catch (\Exception $e) {
-                return '';
-            }
-        }
-        return '';
     }
 
     /**
@@ -213,5 +181,14 @@ class Clarity extends Template
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHyvaTheme(): bool
+    {
+        // Check if the Hyvä module is installed
+        return $this->moduleList->has(self::HYVA_THEME_MODULE);
     }
 }

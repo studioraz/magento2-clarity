@@ -25,6 +25,11 @@
                         <field id="enabled">1</field>
                     </depends>
                 </field>
+                <field id="session_cookie_tracker" translate="label comment" sortOrder="100" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Session Cookie Tracker</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[This configuration is designed to monitor and track the value of the PHPSESSID cookie]]></comment>
+                </field>
             </group>
         </section>
     </system>

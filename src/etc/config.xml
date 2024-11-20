@@ -10,6 +10,7 @@
         <srclarity>
             <general>
                 <enabled>0</enabled>
+                <session_cookie_tracker>0</session_cookie_tracker>
             </general>
         </srclarity>
     </default>

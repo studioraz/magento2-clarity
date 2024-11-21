@@ -31,7 +31,7 @@ $clarityCode = $block->getClarityTrackingCode();
                 c.clarity("set", "customer-email", "<?= $escaper->escapeJs($customerEmail) ?>");
             <?php endif;; ?>
             <?php if ($phpSessionId = $block->isEnabledSessionCookieTracker()): ?>
-                c.clarity("set", "php-session-id", <?=  $escaper->escapeJs($_COOKIE['PHPSESSID'] ?? '') ?>);
+                c.clarity("set", "php-session-id", "<?=  $escaper->escapeJs($_COOKIE['PHPSESSID'] ?? '') ?>");
             <?php endif;; ?>
         })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
 

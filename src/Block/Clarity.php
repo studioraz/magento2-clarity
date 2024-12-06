@@ -27,7 +27,6 @@ class Clarity extends Template
 
     const XML_CLARITY_TRACKING_CODE = 'srclarity/general/tracking_code';
     const XML_CLARITY_ENBALED = 'srclarity/general/enabled';
-    const XML_CLARITY_SESSION_COOKIE_TRACKER = 'srclarity/general/session_cookie_tracker';
     const SUCCESS_PAGE_URL = 'checkout/onepage/success';
     const HYVA_THEME_MODULE = 'Hyva_Theme';
 
@@ -95,18 +94,6 @@ class Clarity extends Template
     {
         return $this->scopeConfig->getValue(
             self::XML_CLARITY_ENBALED,
-            ScopeInterface::SCOPE_STORE
-        );
-    }
-
-    /**
-     * @return string|null
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     */
-    public function isEnabledSessionCookieTracker(): ?string
-    {
-        return $this->scopeConfig->getValue(
-            self::XML_CLARITY_SESSION_COOKIE_TRACKER,
             ScopeInterface::SCOPE_STORE
         );
     }

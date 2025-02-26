@@ -48,9 +48,13 @@ class CustomerPlugin
     public function afterGetSectionData(Customer $subject, $result)
     {
         if (count($result)) {
-            $customer = $this->currentCustomer->getCustomer();
-            $result['email'] = $customer->getEmail();
-            $result['groupName'] = $this->getCustomerGroup();
+            try {
+                $customer = $this->currentCustomer->getCustomer();
+                $result['email'] = $customer->getEmail();
+                $result['groupName'] = $this->getCustomerGroup();
+            } catch (\Exception $e) {
+                return $result;
+            }
         }
         return $result;
     }

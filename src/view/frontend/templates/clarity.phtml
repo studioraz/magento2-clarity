@@ -13,59 +13,84 @@ $clarityCode = $block->getClarityTrackingCode();
 <?php if ($block->isEnabled()): ?>
     <!-- BEGIN CLARITY TRACKING CODE -->
     <script>
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            <?php if ($sessionId = $block->getSessionId()): ?>
-                window.srClaritySessionId = '<?= $escaper->escapeJs($sessionId) ?>';
-                c.clarity("identify", window.srClaritySessionId, window.srClaritySessionId, '', '');
-            <?php endif;; ?>
-            <?php if ($orderIncrementId = $block->getOrderId()): ?>
-                c.clarity("set", "order-increment-id", "<?= $escaper->escapeJs($orderIncrementId) ?>");
-            <?php endif;; ?>
-            <?php if ($quoteId = $block->getQuoteId()): ?>
-                c.clarity("set", "quote-id", "<?= $escaper->escapeJs($quoteId) ?>");
-            <?php endif;; ?>
-            <?php if ($customerEmail = $block->getCustomerEmail()): ?>
-                c.clarity("set", "customer-email", "<?= $escaper->escapeJs($customerEmail) ?>");
-            <?php endif;; ?>
-            <?php if ($phpSessionId = $block->isEnabledSessionCookieTracker()): ?>
-                c.clarity("set", "php-session-id", "<?=  $escaper->escapeJs($_COOKIE['PHPSESSID'] ?? '') ?>");
-            <?php endif;; ?>
-        })(window, document, "clarity", "script", "<?= $escaper->escapeHtml($clarityCode) ?>");
+        (function() {
+            var clarityLoaded = false;
+            window.clarity = window.clarity || function() { (window.clarity.q = window.clarity.q || []).push(arguments); };
 
+            function initClarity() {
+                if (clarityLoaded) return;
+                clarityLoaded = true;
+
+                var script = document.createElement("script");
+                script.async = true;
+                script.src = "https://www.clarity.ms/tag/<?= $escaper->escapeHtml($clarityCode) ?>";
+                document.head.appendChild(script);
+
+                <?php if ($sessionId = $block->getSessionId()): ?>
+                window.srClaritySessionId = '<?= $escaper->escapeJs($sessionId) ?>';
+                window.clarity("identify", window.srClaritySessionId, window.srClaritySessionId, '', '');
+                <?php endif;; ?>
+                <?php if ($orderIncrementId = $block->getOrderId()): ?>
+                window.clarity("set", "order-increment-id", "<?= $escaper->escapeJs($orderIncrementId) ?>");
+                <?php endif;; ?>
+                <?php if ($quoteId = $block->getQuoteId()): ?>
+                window.clarity("set", "quote-id", "<?= $escaper->escapeJs($quoteId) ?>");
+                <?php endif;; ?>
+                <?php if ($customerEmail = $block->getCustomerEmail()): ?>
+                window.clarity("set", "customer-email", "<?= $escaper->escapeJs($customerEmail) ?>");
+                <?php endif;; ?>
+                <?php if ($phpSessionId = $block->isEnabledSessionCookieTracker()): ?>
+                window.clarity("set", "php-session-id", "<?=  $escaper->escapeJs($_COOKIE['PHPSESSID'] ?? '') ?>");
+                <?php endif;; ?>
+            }
+
+            var events = ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'];
+            function onInteraction(e) {
+                if (e && e.type === 'scroll' && window.scrollY === 0) {
+                    return;
+                }
+                initClarity();
+                events.forEach(function(evt) { window.removeEventListener(evt, onInteraction); });
+            }
+            events.forEach(function(e) { window.addEventListener(e, onInteraction, { passive: true }); });
+
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(function() { setTimeout(initClarity, 4000); });
+            } else {
+                setTimeout(initClarity, 5000);
+            }
+        })();
 
         <?php if ($block->isHyvaTheme()) : ?>
-            window.addEventListener("private-content-loaded", function(event) {
-                const sectionData = event.detail.data;
-                if (sectionData && sectionData.customer) {
-                    const customer = sectionData.customer;
-                    if (customer && customer.email && window.srClaritySessionId) {
-                        let email = customer.email ,
-                            fullname = customer.fullname,
-                            groupName = customer.groupName;
-                        window.clarity("set", "friendly-name", fullname);
-                        window.clarity("set", "customer-group", groupName);
-                        window.clarity("set", "customer-email", email);
-                    }
+        window.addEventListener("private-content-loaded", function(event) {
+            const sectionData = event.detail.data;
+            if (sectionData && sectionData.customer) {
+                const customer = sectionData.customer;
+                if (customer && customer.email && window.srClaritySessionId) {
+                    let email = customer.email ,
+                        fullname = customer.fullname,
+                        groupName = customer.groupName;
+                    window.clarity("set", "friendly-name", fullname);
+                    window.clarity("set", "customer-group", groupName);
+                    window.clarity("set", "customer-email", email);
+                }
+            }
+        });
+        <?php else: ?>
+        require([
+            'Magento_Customer/js/customer-data'
+        ], function (customerData) {
+            customerData.get('customer').subscribe(function (customer) {
+                if (customer && customer.email && window.srClaritySessionId) {
+                    let email = customer.email;
+                    let fullname = customer.fullname;
+                    let groupName = customer.groupName;
+                    window.clarity("set", "friendly-name", fullname);
+                    window.clarity("set", "customer-group", groupName);
+                    window.clarity("set", "customer-email", email);
                 }
             });
-        <?php else: ?>
-            require([
-                'Magento_Customer/js/customer-data'
-            ], function (customerData) {
-                customerData.get('customer').subscribe(function (customer) {
-                    if (customer && customer.email && window.srClaritySessionId) {
-                        let email = customer.email;
-                        let fullname = customer.fullname;
-                        let groupName = customer.groupName;
-                        window.clarity("set", "friendly-name", fullname);
-                        window.clarity("set", "customer-group", groupName);
-                        window.clarity("set", "customer-email", email);
-                    }
-                });
-            });
+        });
         <?php endif; ?>
 
     </script>
